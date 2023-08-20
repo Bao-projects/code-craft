@@ -9,6 +9,7 @@ class Language(Enum):
 
     C = "c"
     CPP = "cpp"
+    C_SHARP = "csharp"
     JAVA = "java"
     JAVASCRIPT = "javascript"
     PYTHON = "python"
@@ -25,8 +26,8 @@ _LANGUAGE_TO_FILE_EXTENSIONS: dict[Language, str] = {
     Language.RUBY: "rb",
 }
 
-# Directory where the temp files will be stored.
-_TEMPFILES_DIR = "/tmp/code-craft/code"
+# Directory where all the temporary directories will be stored.
+_TEMPDIR_PREFIX = "/tmp/code-craft/code"
 
 
 @dataclass
@@ -58,6 +59,7 @@ def __generate_run_command(language: Language, filename: str) -> str:
     return {
         language.C: f"gcc {filename}.{EXT} -o {filename} && {filename}",
         language.CPP: f"g++ {filename}.{EXT} -o {filename} && {filename}",
+        Language.C_SHARP: f"mcs {filename}.{EXT} && mono {filename}.exe",
         language.JAVA: f"javac {filename}.{EXT} && java {filename}",
         language.JAVASCRIPT: f"node {filename}.{EXT}",
         language.PYTHON: f"python3 {filename}.{EXT}",
@@ -65,22 +67,16 @@ def __generate_run_command(language: Language, filename: str) -> str:
     }[language]
 
 
-def __create_tempfile_and_paste_code(filepath: str, code: str) -> bool:
+def __create_tempdir_and_paste_code(code: str) -> str:
     """
-    Create a file from the given path and paste the given code into the file.
+    Create a directory and paste the given code into a temporary file.
 
     Returns:
-        True if the process was successful, False otherwise.
+        Path to the temporary directory created.
     """
 
 
-def __generate_random_filename() -> str:
+def __delete_dir(dirpath: str) -> None:
     """
-    Generate a random string to be used as a name for a temporary file.
-    """
-
-
-def __delete_file(filepath: str) -> None:
-    """
-    Delete a given file.
+    Delete a given directory.
     """

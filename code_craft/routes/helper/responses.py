@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from flask import jsonify 
+from flask import jsonify
 from flask import Response
 
-from code_craft.code_executor import CodeExecutionResult
+
 @dataclass
 class ExecutionResult:
     output: str
@@ -17,11 +17,12 @@ class ExecutionResult:
                     "data": {
                         "output": self.output,
                         "exit_code": self.exit_code,
-                    }
+                    },
                 }
             ),
             200,
         )
+
 
 @dataclass
 class FailureResult:

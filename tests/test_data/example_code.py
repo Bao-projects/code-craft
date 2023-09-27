@@ -7,7 +7,7 @@ C_HELLO_WORLD = """
 #include <stdio.h>
 
 int main() {
-    printf("Hello, world!");
+    printf("Hello, world! by C");
     return 0;
 }
 """
@@ -16,7 +16,7 @@ CPP_HELLO_WORLD = """
 #include <iostream>
 
 int main() {
-    std::cout << "Hello, world!" << std::endl;
+    std::cout << "Hello, world! by C++" << std::endl;
     return 0;
 }
 """
@@ -24,13 +24,13 @@ int main() {
 JAVA_HELLO_WORLD = """
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        System.out.println("Hello, World! by Java");
     }
 }
 """
 
-JAVASCRIPT_HELLO_WORLD = 'console.log("Hello, world!");'
+JAVASCRIPT_HELLO_WORLD = 'console.log("Hello, world! by Javascript");'
 
-PYTHON_HELLO_WORLD = 'print("Hello, world!")'
+PYTHON_HELLO_WORLD = 'print("Hello, world! by Python")'
 
-RUBY_HELLO_WORLD = 'puts "Hello, world!"'
+RUBY_HELLO_WORLD = 'puts "Hello, world! by Ruby"'

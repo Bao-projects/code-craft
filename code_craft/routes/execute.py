@@ -15,20 +15,20 @@ def execute() -> Response:
     Accepts 2 parameters: `language` and `code`.
     """
 
-    # Check if both language and code are provided in the request
-    if "language" not in request.form or "code" not in request.form:
-        return FailureResult(
-            "Invalid input, missing code or language"
-        ).to_flask_response()
+    # Check if both language and code are provided in the request and not empty
+    for input_arg in ["language", "code"]:
+        if input_arg not in request.form:
+            return FailureResult(
+                f"Input missing field '{input_arg}'"
+            ).to_flask_response()
+        elif not request.form[input_arg].strip():
+            return FailureResult(
+                f"Input field '{input_arg}' is empty"
+            ).to_flask_response()
 
     # Get the language and code
     language_str = request.form["language"]
     code = request.form["code"]
-
-    if not language_str or not code:
-        return FailureResult(
-            "Invalid input, empty code or language"
-        ).to_flask_response()
 
     # Check if the provided language is valid
     if language_str.lower() not in [lang.value for lang in Language]:

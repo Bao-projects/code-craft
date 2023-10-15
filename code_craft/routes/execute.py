@@ -1,5 +1,6 @@
 from flask import request
 from flask import Response
+from flask_cors import cross_origin
 
 from . import routes
 from code_craft.code_executor import execute_code
@@ -9,6 +10,7 @@ from code_craft.routes.helper.responses import FailureResult
 
 
 @routes.route("/execute", methods=["GET"])
+@cross_origin()
 def execute() -> Response:
     """
     REST API to execute a given block of code.

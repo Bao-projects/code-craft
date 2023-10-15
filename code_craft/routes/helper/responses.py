@@ -6,7 +6,8 @@ from flask import Response
 
 @dataclass
 class ExecutionResult:
-    output: str
+    stdout: str
+    stderr: str
     exit_code: int
 
     def to_flask_response(self) -> tuple[Response, int]:
@@ -15,7 +16,8 @@ class ExecutionResult:
                 {
                     "success": True,
                     "data": {
-                        "output": self.output,
+                        "stdout": self.stdout,
+                        "stderr": self.stderr,
                         "exit_code": self.exit_code,
                     },
                 }

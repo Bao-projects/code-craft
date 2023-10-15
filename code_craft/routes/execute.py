@@ -38,4 +38,6 @@ def execute() -> Response:
 
     # Execute the given block of code
     result = execute_code(Language(language_str), code)
-    return ExecutionResult(result.output, result.exit_code).to_flask_response()
+    return ExecutionResult(
+        result.stdout, result.stderr, result.exit_code
+    ).to_flask_response()

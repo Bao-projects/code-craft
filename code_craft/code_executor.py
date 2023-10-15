@@ -1,3 +1,8 @@
+import os
+import random
+import shutil
+import string
+import subprocess
 from dataclasses import dataclass
 from enum import Enum
 
@@ -20,6 +25,7 @@ class Language(Enum):
 _LANGUAGE_TO_FILE_EXTENSIONS: dict[Language, str] = {
     Language.C: "c",
     Language.CPP: "cpp",
+    Language.C_SHARP: "cs",
     Language.JAVA: "java",
     Language.JAVASCRIPT: "js",
     Language.PYTHON: "py",
@@ -28,6 +34,7 @@ _LANGUAGE_TO_FILE_EXTENSIONS: dict[Language, str] = {
 
 # Directory where all the temporary directories will be stored.
 _TEMPDIR_PREFIX = "/tmp/code-craft/code"
+_TEMP_NAME_LEN = 10
 
 
 @dataclass
@@ -36,7 +43,8 @@ class CodeExecutionResult:
     Represents a code execution result.
     """
 
-    output: str
+    stdout: str
+    stderr: str
     exit_code: int
 
 
@@ -48,35 +56,50 @@ def execute_code(language: Language, code: str) -> CodeExecutionResult:
         language (Language): The programming language the code is written in.
         code (str): The piece of code to execute.
     """
-    return CodeExecutionResult("hello world", 0)
+    dirpath, main_file = __create_tempdir_and_paste_code(language, code)
+
+    # Get the command to run the code based on given language
+    run_cmd = __generate_run_command(language, dirpath, main_file)
+    result = subprocess.run(run_cmd, shell=True, capture_output=True, text=True)
+
+    # Remove code temp directory
+    shutil.rmtree(dirpath)
+
+    return CodeExecutionResult(result.stdout, result.stderr, result.returncode)
 
 
-def __generate_run_command(language: Language, filename: str) -> str:
+def __generate_run_command(language: Language, dir: str, filename: str) -> list[str]:
     """
     Generate a command to run a file based on the given language and filepath.
     """
-    EXT = _LANGUAGE_TO_FILE_EXTENSIONS[language]
+    file_name_no_ext = ".".join(filename.split(".")[:-1])
+
     return {
-        language.C: f"gcc {filename}.{EXT} -o {filename} && {filename}",
-        language.CPP: f"g++ {filename}.{EXT} -o {filename} && {filename}",
-        Language.C_SHARP: f"mcs {filename}.{EXT} && mono {filename}.exe",
-        language.JAVA: f"javac {filename}.{EXT} && java {filename}",
-        language.JAVASCRIPT: f"node {filename}.{EXT}",
-        language.PYTHON: f"python3 {filename}.{EXT}",
-        language.RUBY: f"ruby {filename}.{EXT}",
+        language.C: f"cd {dir} && gcc {filename} && ./a.out",
+        language.CPP: f"cd {dir} && g++ {filename} && ./a.out",
+        language.C_SHARP: f"cd {dir} && mcs {filename} && mono {file_name_no_ext}.exe",
+        language.JAVA: f"cd {dir} && javac {filename} && java {file_name_no_ext}",
+        language.JAVASCRIPT: f"node {dir}/{filename}",
+        language.PYTHON: f"python3 {dir}/{filename}",
+        language.RUBY: f"ruby {dir}/{filename}",
     }[language]
 
 
-def __create_tempdir_and_paste_code(code: str) -> str:
+def __create_tempdir_and_paste_code(language: Language, code: str) -> tuple[str, str]:
     """
     Create a directory and paste the given code into a temporary file.
-
     Returns:
         Path to the temporary directory created.
     """
+    random_dir = "".join(random.choices(string.ascii_letters, k=_TEMP_NAME_LEN))
+    dirpath = f"{_TEMPDIR_PREFIX}/{random_dir}"
+    os.makedirs(dirpath)
 
+    main_file = f"main.{_LANGUAGE_TO_FILE_EXTENSIONS[language]}"
+    if language == Language.JAVA:
+        main_file = "Main.java"
 
-def __delete_dir(dirpath: str) -> None:
-    """
-    Delete a given directory.
-    """
+    with open(f"{dirpath}/{main_file}", "x") as f:
+        f.write(code)
+
+    return dirpath, main_file

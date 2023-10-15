@@ -58,9 +58,8 @@ def execute_code(language: Language, code: str) -> CodeExecutionResult:
     """
     dirpath, main_file = __create_tempdir_and_paste_code(language, code)
 
-    # Get the command to run the code based on given lagnuage
+    # Get the command to run the code based on given language
     run_cmd = __generate_run_command(language, dirpath, main_file)
-
     result = subprocess.run(run_cmd, shell=True, capture_output=True, text=True)
 
     # Remove code temp directory
@@ -92,7 +91,6 @@ def __create_tempdir_and_paste_code(language: Language, code: str) -> tuple[str,
     Returns:
         Path to the temporary directory created.
     """
-
     random_dir = "".join(random.choices(string.ascii_letters, k=_TEMP_NAME_LEN))
     dirpath = f"{_TEMPDIR_PREFIX}/{random_dir}"
     os.makedirs(dirpath)

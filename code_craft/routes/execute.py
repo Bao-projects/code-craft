@@ -9,7 +9,7 @@ from code_craft.routes.helper.responses import ExecutionResult
 from code_craft.routes.helper.responses import FailureResult
 
 
-@routes.route("/execute", methods=["GET"])
+@routes.route("/execute", methods=["POST"])
 @cross_origin()
 def execute() -> Response:
     """

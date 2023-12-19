@@ -19,7 +19,10 @@ class Language(Enum):
     JAVASCRIPT = "javascript"
     PYTHON = "python"
     RUBY = "ruby"
-
+    PERL = "perl"
+    PHP = "php"
+    GO = "go"
+    RUST = "rust"
 
 # Map a programming language enum to its corresponding file extension.
 _LANGUAGE_TO_FILE_EXTENSIONS: dict[Language, str] = {
@@ -30,6 +33,10 @@ _LANGUAGE_TO_FILE_EXTENSIONS: dict[Language, str] = {
     Language.JAVASCRIPT: "js",
     Language.PYTHON: "py",
     Language.RUBY: "rb",
+    Language.PERL: "pl",
+    Language.PHP: "php",
+    Language.GO: "go",
+    Language.RUST: "rs",
 }
 
 # Directory where all the temporary directories will be stored.
@@ -82,6 +89,10 @@ def __generate_run_command(language: Language, dir: str, filename: str) -> list[
         language.JAVASCRIPT: f"node {dir}/{filename}",
         language.PYTHON: f"python3 {dir}/{filename}",
         language.RUBY: f"ruby {dir}/{filename}",
+        language.PERL: f"perl {dir}/{filename}",
+        language.PHP: f"php {dir}/{filename}",
+        language.GO: f"cd {dir} && go run {filename}",
+        language.RUST: f"cd {dir} && rustc {filename} && ./{file_name_no_ext}",
     }[language]
 
 

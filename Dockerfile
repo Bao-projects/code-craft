@@ -29,6 +29,12 @@ RUN apt-get install -y nodejs
 RUN apt-get install -y python3.9
 # Ruby
 RUN apt-get install -y ruby-full
+# PHP
+RUN apt-get install -y php
+# Go
+RUN apt-get install -y golang-go
+# Rust
+RUN apt-get install -y rustc
 
 # Install pip package manager for python
 RUN apt-get install -y python3-pip

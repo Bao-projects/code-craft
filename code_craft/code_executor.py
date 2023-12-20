@@ -24,6 +24,7 @@ class Language(Enum):
     GO = "go"
     RUST = "rust"
 
+
 # Map a programming language enum to its corresponding file extension.
 _LANGUAGE_TO_FILE_EXTENSIONS: dict[Language, str] = {
     Language.C: "c",
